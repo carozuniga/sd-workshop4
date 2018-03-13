@@ -22,6 +22,24 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     end
     serviceA.vm.provision "shell", path: "serviceA.sh"
   end
+  config.vm.define :centos_balanceador do |balanceador|
+    balanceador.vm.box = "centos_rabbit"
+    balanceador.vm.network :private_network, ip: "192.168.56.103"
+    #serviceA.vm.network "public_network", bridge: "eno1", ip:"192.168.131.101", netmask: "255.255.255.0"
+    balanceador.vm.provider :virtualbox do |vb|
+      vb.customize ["modifyvm", :id, "--memory", "256","--cpus", "1", "--name", "centos_balanceador" ]
+    end
+    balanceador.vm.provision "shell", path: "balanceador.sh"
+  end
+  config.vm.define :centos_serviceA2 do |serviceA2|
+    serviceA2.vm.box = "centos_rabbit"
+    serviceA2.vm.network :private_network, ip: "192.168.56.104"
+    #serviceA.vm.network "public_network", bridge: "eno1", ip:"192.168.131.101", netmask: "255.255.255.0"
+    serviceA2.vm.provider :virtualbox do |vb|
+      vb.customize ["modifyvm", :id, "--memory", "256","--cpus", "1", "--name", "centos_serviceA2" ]
+    end
+    serviceA2.vm.provision "shell", path: "serviceA.sh"
+  end
 end
 
 
